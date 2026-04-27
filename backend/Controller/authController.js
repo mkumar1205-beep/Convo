@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken')
+const User = require('../Models/user')
 
 const createToken = (userId) => {
   return jwt.sign(
