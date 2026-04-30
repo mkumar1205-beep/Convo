@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Convo</title>
+</head>
+<body>
+  <h2>Real-time Chat Test</h2>
+
+  <input id="userId" placeholder="Enter your userId" />
+  <button onclick="join()">Join</button>
+
+  <br><br>
+
+  <input id="receiverId" placeholder="Receiver ID" />
+  <input id="msg" placeholder="Message" />
+  <button onclick="send()">Send</button>
+
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script>
+    const socket = io('http://localhost:5000')
+
+    let currentUserId = ""
+
+    function join() {
+      currentUserId = document.getElementById('userId').value
+      socket.emit('join', currentUserId)
+      console.log("Joined as:", currentUserId)
+    }
+
+    socket.on('newMessage', (msg) => {
+      console.log("Received:", msg)
+      alert("New message: " + msg.text)
+    })
+
+    async function send() {
+      const receiverId = document.getElementById('receiverId').value
+      const text = document.getElementById('msg').value
+
+      await fetch('http://localhost:5000/api/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'BearereyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjE1ZmY0NDJiOWFlYzlmZmNhZjAwYSIsImlhdCI6MTc3NzQ1NjY2OCwiZXhwIjoxNzgwMDQ4NjY4fQ._G8D-it_wjgo_dT911gSI15BGPoFc6hnQ0jhM2vlItU'
+        },
+        body: JSON.stringify({
+          receiverId,
+          text
+        })
+      })
+    }
+    console.log("TOKEN:", "Bearer YOUR_TOKEN")
+  </script>
+</body>
+</html>
