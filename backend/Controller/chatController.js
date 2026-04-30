@@ -1,5 +1,6 @@
 const Message = require('../models/chat')
 const User = require('../models/user')
+const { io, onlineUsers } = require('../server')
 const sendMessage = async (req, res) => {
   try {
     const { receiverId, text } = req.body
@@ -23,6 +24,11 @@ const sendMessage = async (req, res) => {
       receiver: receiverId,
       text
     })
+
+    const receiverSocketId = onlineUsers[receiverId]
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit('newMessage', message)
+    }
 
     res.status(201).json({
       success: true,
