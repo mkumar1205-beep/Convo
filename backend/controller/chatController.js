@@ -1,11 +1,11 @@
 const Message = require('../models/chat')
 const User = require('../models/user')
-const { io, onlineUsers } = require('../server')
+const { getIO, getOnlineUsers } = require('../socket')
+const io = getIO()
+
 const sendMessage = async (req, res) => {
-  console.log("🔥 sendMessage called")
   try {
     const { receiverId, text } = req.body
-
     if (!receiverId || !text) {
       return res.status(400).json({
       success: false,
@@ -26,7 +26,7 @@ const sendMessage = async (req, res) => {
       text
     })
 
-    const receiverSocketId = onlineUsers[receiverId]
+    const receiverSocketId = getOnlineUsers()[receiverId]
     if (receiverSocketId) {
       io.to(receiverSocketId).emit('newMessage', message)
     }
@@ -37,6 +37,7 @@ const sendMessage = async (req, res) => {
     })
 
   } catch (error) {
+    console.log("ERROR:", error)
     res.status(500).json({
       success: false,
       message: error.message

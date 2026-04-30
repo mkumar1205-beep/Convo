@@ -45,8 +45,6 @@ const protect = async (req, res, next) => {
   }
 }
 
-console.log("🔐 Protect middleware hit")
-
 module.exports = protect
 
 /*When a logged in user makes a request, the token in the authorization header looks like - Authorization: Bearer eyJhbjnu...*/
