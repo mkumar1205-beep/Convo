@@ -2,6 +2,7 @@ const Message = require('../models/chat')
 const User = require('../models/user')
 const { io, onlineUsers } = require('../server')
 const sendMessage = async (req, res) => {
+  console.log("🔥 sendMessage called")
   try {
     const { receiverId, text } = req.body
 
